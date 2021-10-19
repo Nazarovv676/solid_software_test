@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:solid_software_test/pages/color_generator.dart';
+import 'package:solid_software_test/pages/main/color_generator.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
