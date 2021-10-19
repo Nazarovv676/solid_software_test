@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:solid_software_test/pages/main/color_generator.dart';
 
@@ -16,6 +18,21 @@ class _MainPageState extends State<MainPage> {
   final _animDuration = const Duration(seconds: 1);
   final _animCurve = Curves.ease;
 
+  bool _taped = false;
+
+  bool _showHelpLabel = false;
+
+  @override
+  void initState() {
+    super.initState();
+    Timer(
+      const Duration(seconds: 5),
+      () => setState(() {
+        _showHelpLabel = !_taped;
+      }),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return TweenAnimationBuilder<Color?>(
@@ -29,17 +46,39 @@ class _MainPageState extends State<MainPage> {
             splashFactory: InkRipple.splashFactory,
             onTap: () => setState(() {
               _color = _colorGenerator.nextColor();
+              _taped = true;
             }),
-            child: Center(
-              child: AnimatedDefaultTextStyle(
-                duration: _animDuration,
-                curve: _animCurve,
-                style: Theme.of(context)
-                    .textTheme
-                    .headline5!
-                    .copyWith(color: _textColor),
-                child: const Text('Hey there'),
-              ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                AnimatedDefaultTextStyle(
+                  duration: _animDuration,
+                  curve: _animCurve,
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline5!
+                      .copyWith(color: _textColor),
+                  child: const Text('Hey there'),
+                ),
+                const SizedBox(height: 20),
+                IgnorePointer(
+                  child: AnimatedOpacity(
+                    opacity: _showHelpLabel && !_taped ? 1 : 0,
+                    duration: _animDuration,
+                    curve: _animCurve,
+                    child: AnimatedDefaultTextStyle(
+                      duration: _animDuration,
+                      curve: _animCurve,
+                      style: Theme.of(context)
+                          .textTheme
+                          .caption!
+                          .copyWith(color: _textColor),
+                      child: const Text('Tap to change color'),
+                    ),
+                  ),
+                )
+              ],
             ),
           ),
         );
