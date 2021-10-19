@@ -17,21 +17,22 @@ class _MainPageState extends State<MainPage> {
 
   final _animDuration = const Duration(seconds: 1);
   final _animCurve = Curves.ease;
-
-  bool _taped = false;
+  late Timer _timer;
 
   bool _showHelpLabel = false;
 
   @override
   void initState() {
     super.initState();
-    Timer(
-      const Duration(seconds: 5),
-      () => setState(() {
-        _showHelpLabel = !_taped;
-      }),
-    );
+    _timer = _newTimer;
   }
+
+  Timer get _newTimer => Timer(
+        const Duration(seconds: 5),
+        () => setState(() {
+          _showHelpLabel = true;
+        }),
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +47,9 @@ class _MainPageState extends State<MainPage> {
             splashFactory: InkRipple.splashFactory,
             onTap: () => setState(() {
               _color = _colorGenerator.nextColor();
-              _taped = true;
+              _showHelpLabel = false;
+              _timer.cancel();
+              _timer = _newTimer;
             }),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -64,7 +67,7 @@ class _MainPageState extends State<MainPage> {
                 const SizedBox(height: 20),
                 IgnorePointer(
                   child: AnimatedOpacity(
-                    opacity: _showHelpLabel && !_taped ? 1 : 0,
+                    opacity: _showHelpLabel ? 1 : 0,
                     duration: _animDuration,
                     curve: _animCurve,
                     child: AnimatedDefaultTextStyle(
